@@ -1,0 +1,7 @@
+{
+  "name": "Medicine Stockout Predictor",
+  "description": "AI-powered medicine stockout forecasting and smart supply chain early-warning system for hospitals, PHCs, and suppliers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

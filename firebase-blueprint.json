@@ -1,0 +1,113 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Healthcare worker or distributor user profile",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["officer", "distributor", "admin", "viewer"] },
+        "facilityId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "email"]
+    },
+    "Facility": {
+      "title": "Facility",
+      "description": "Health facility or warehouse entity",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "type": { "type": "string" },
+        "district": { "type": "string" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "dailyFootfall": { "type": "number" },
+        "lastSync": { "type": "string" },
+        "distributor": { "type": "string" },
+        "distributorPhone": { "type": "string" },
+        "medicalOfficer": { "type": "string" },
+        "address": { "type": "string" }
+      },
+      "required": ["id", "name", "latitude", "longitude"]
+    },
+    "MedicineStock": {
+      "title": "MedicineStock",
+      "description": "Medicine shelf stock and forecasting records",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "unit": { "type": "string" },
+        "currentStock": { "type": "number" },
+        "baseDailyBurnRate": { "type": "number" },
+        "adjustedDailyBurnRate": { "type": "number" },
+        "reorderPoint": { "type": "number" },
+        "bufferThreshold": { "type": "number" },
+        "daysRemaining": { "type": "number" },
+        "riskLevel": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "name", "currentStock"]
+    },
+    "Nudge": {
+      "title": "Nudge",
+      "description": "Supplier purchase order and restock nudge alert",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "poNumber": { "type": "string" },
+        "facilityId": { "type": "string" },
+        "facilityName": { "type": "string" },
+        "medicineName": { "type": "string" },
+        "suggestedQuantity": { "type": "number" },
+        "urgency": { "type": "string" },
+        "status": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["id", "poNumber", "facilityName", "medicineName"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "Persistent chat messages for Gemini Assistant",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "model", "system"] },
+        "text": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "role", "text"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Individual user documents"
+    },
+    "/facilities/{facilityId}": {
+      "schema": "Facility",
+      "description": "Public health facilities, hospitals, and depots"
+    },
+    "/facilities/{facilityId}/medicines/{medicineId}": {
+      "schema": "MedicineStock",
+      "description": "Subcollection of medicines for a facility"
+    },
+    "/nudges/{nudgeId}": {
+      "schema": "Nudge",
+      "description": "Supplier restock notifications"
+    },
+    "/chat_messages/{messageId}": {
+      "schema": "ChatMessage",
+      "description": "Copilot chat logs"
+    }
+  }
+}

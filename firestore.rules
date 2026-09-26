@@ -1,0 +1,51 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // User profiles
+    match /users/{userId} {
+      allow read: if true;
+      allow create, update: if isAuthenticated() && request.auth.uid == userId;
+      allow delete: if false;
+    }
+
+    // Facilities and nested medicine inventory
+    match /facilities/{facilityId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+
+      match /medicines/{medicineId} {
+        allow read: if true;
+        allow write: if isAuthenticated();
+      }
+    }
+
+    // Supplier restock nudges
+    match /nudges/{nudgeId} {
+      allow read: if true;
+      allow create, update: if true;
+      allow delete: if isAuthenticated();
+    }
+
+    // Chat messages
+    match /chat_messages/{messageId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if isAuthenticated();
+    }
+
+    // Default test connection doc
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+  }
+}
